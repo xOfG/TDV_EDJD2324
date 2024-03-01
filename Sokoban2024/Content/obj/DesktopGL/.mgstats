@@ -1,0 +1,3 @@
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/Utilizador/Documents/GitHub/TDV_EDJD2324/Sokoban2024/Content/File.spritefont","C:/Users/Utilizador/Documents/GitHub/TDV_EDJD2324/Sokoban2024/Content/bin/DesktopGL/File.xnb","FontDescriptionProcessor","SpriteFontContent",2076,267295,0,1721923
+"C:/Users/Utilizador/Documents/GitHub/TDV_EDJD2324/Sokoban2024/Content/Wall_Brown.png","C:/Users/Utilizador/Documents/GitHub/TDV_EDJD2324/Sokoban2024/Content/bin/DesktopGL/Wall_Brown.xnb","TextureProcessor","Texture2DContent",1493,16469,0,0089531

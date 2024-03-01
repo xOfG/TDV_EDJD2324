@@ -8,6 +8,7 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+    private SpriteFont font;
 
     public Game1()
     {
@@ -26,6 +27,7 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+        font = Content.Load<SpriteFont>("File"); //Use the name of the Sprite Font File ("File")
 
         // TODO: use this.Content to load your game content here
     }
@@ -44,6 +46,10 @@ public class Game1 : Game
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Pink);
+        
+        _spriteBatch.Begin();
+        _spriteBatch.DrawString(font, "O texto que eu quiser", new Vector2(100, 100), Color.Blue);
+        _spriteBatch.End();
 
         // TODO: Add your drawing code here
 

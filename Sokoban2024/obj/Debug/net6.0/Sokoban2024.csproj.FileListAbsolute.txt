@@ -24,3 +24,7 @@ C:\Users\Utilizador\Documents\GitHub\TDV_EDJD2324\Sokoban2024\obj\Debug\net6.0\r
 C:\Users\Utilizador\Documents\GitHub\TDV_EDJD2324\Sokoban2024\obj\Debug\net6.0\Sokoban2024.pdb
 C:\Users\Utilizador\Documents\GitHub\TDV_EDJD2324\Sokoban2024\obj\Debug\net6.0\Sokoban2024.genruntimeconfig.cache
 C:\Users\Utilizador\Documents\GitHub\TDV_EDJD2324\Sokoban2024\obj\Debug\net6.0\ref\Sokoban2024.dll
+C:\Users\Utilizador\Documents\GitHub\TDV_EDJD2324\Sokoban2024\bin\Debug\net6.0\Content\Character4.xnb
+C:\Users\Utilizador\Documents\GitHub\TDV_EDJD2324\Sokoban2024\bin\Debug\net6.0\Content\Crate_Purple.xnb
+C:\Users\Utilizador\Documents\GitHub\TDV_EDJD2324\Sokoban2024\bin\Debug\net6.0\Content\EndPoint_Blue.xnb
+C:\Users\Utilizador\Documents\GitHub\TDV_EDJD2324\Sokoban2024\bin\Debug\net6.0\Content\File.xnb
