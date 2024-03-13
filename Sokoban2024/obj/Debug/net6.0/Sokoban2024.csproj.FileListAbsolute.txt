@@ -28,3 +28,5 @@ C:\Users\Utilizador\Documents\GitHub\TDV_EDJD2324\Sokoban2024\bin\Debug\net6.0\C
 C:\Users\Utilizador\Documents\GitHub\TDV_EDJD2324\Sokoban2024\bin\Debug\net6.0\Content\Crate_Purple.xnb
 C:\Users\Utilizador\Documents\GitHub\TDV_EDJD2324\Sokoban2024\bin\Debug\net6.0\Content\EndPoint_Blue.xnb
 C:\Users\Utilizador\Documents\GitHub\TDV_EDJD2324\Sokoban2024\bin\Debug\net6.0\Content\File.xnb
+C:\Users\Utilizador\Documents\GitHub\TDV_EDJD2324\Sokoban2024\bin\Debug\net6.0\Content\Wall_Brown.xnb
+C:\Users\Utilizador\Documents\GitHub\TDV_EDJD2324\Sokoban2024\bin\Debug\net6.0\Content\level1.txt
