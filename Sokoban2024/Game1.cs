@@ -15,6 +15,7 @@ public class Game1 : Game
     private char[,] level;
     private Texture2D player, dot, box, wall; //Load images Texture 
     int tileSize = 64; //potencias de 2 (operações binárias)    
+    private Player sokoban;
 
     public Game1()
     {
@@ -58,7 +59,15 @@ public class Game1 : Game
         {
             for (int y = 0; y < nrLinhas; y++)
             {
-                level[x, y] = linhas[y][x];
+                if (linhas[y][x] == 'Y')
+                {
+                    sokoban = new Player(x, y);
+                    level[x, y] = ' '; // put a blank instead of the sokoban 'Y'
+                }
+                else
+                {
+                    level[x, y] = linhas[y][x];
+                }
             }
         }
     }
@@ -92,9 +101,9 @@ public class Game1 : Game
 
                 switch (level[x, y])
                 {
-                    case 'Y':
+                    /*case 'Y':
                         _spriteBatch.Draw(player, position, Color.White);
-                        break;
+                        break;*/
                     case '#':
                         _spriteBatch.Draw(box, position, Color.White);
                         break;
@@ -107,6 +116,11 @@ public class Game1 : Game
                 }
             }
         }
+        
+        position.X = sokoban.Position.X * tileSize;
+        position.Y = sokoban.Position.Y * tileSize;
+        _spriteBatch.Draw(player, position, Color.White);
+
         _spriteBatch.End();
 
         // TODO: Add your drawing code here
