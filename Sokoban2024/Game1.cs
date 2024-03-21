@@ -1,130 +1,143 @@
-﻿using System.IO;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
+using System.IO;
 
-namespace Sokoban2024;
-
-public class Game1 : Game
+namespace Sokoban2024
 {
-    private GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
-    private SpriteFont font;
-    private int nrLinhas = 0;
-    private int nrColunas = 0;
-    private char[,] level;
-    private Texture2D player, dot, box, wall; //Load images Texture 
-    int tileSize = 64; //potencias de 2 (operações binárias)    
-    private Player sokoban;
-
-    public Game1()
+    public class Game1 : Game
     {
-        _graphics = new GraphicsDeviceManager(this);
-        Content.RootDirectory = "Content";
-        IsMouseVisible = true;
-    }
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
+        private Texture2D player, dot, box, wall;
+        private int tileSize = 64;
+        private Player sokoban;
 
-    protected override void Initialize()
-    {
-        // TODO: Add your initialization logic here
-        
-        LoadLevel("level1.txt");
-        _graphics.PreferredBackBufferHeight = tileSize * level.GetLength(1); //definição da altura
-        _graphics.PreferredBackBufferWidth = tileSize * level.GetLength(0); //definição da largura
-        _graphics.ApplyChanges(); //aplica a atualização da janela
+        public char[,] level;
+        public List<Point> boxes;
 
-        base.Initialize();
-    }
-
-    protected override void LoadContent()
-    {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
-        font = Content.Load<SpriteFont>("File"); //Use the name of the Sprite Font File ("File")
-        player = Content.Load<Texture2D>("Character4");
-        dot = Content.Load<Texture2D>("EndPoint_Blue");
-        box = Content.Load<Texture2D>("Crate_Purple");
-        wall = Content.Load<Texture2D>("Wall_Brown");
-
-        // TODO: use this.Content to load your game content here
-    }
-
-    void LoadLevel(string levelFile)
-    {
-        string[] linhas = File.ReadAllLines($"Content/{levelFile}");
-        nrLinhas = linhas.Length;
-        nrColunas = linhas[0].Length;
-
-        level = new char[nrColunas, nrLinhas];
-        for (int x = 0; x < nrColunas; x++)
+        public Game1()
         {
-            for (int y = 0; y < nrLinhas; y++)
+            _graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
+            IsMouseVisible = true;
+        }
+
+        protected override void Initialize()
+        {
+            LoadLevel("level1.txt");
+            _graphics.PreferredBackBufferHeight = tileSize * level.GetLength(1);
+            _graphics.PreferredBackBufferWidth = tileSize * level.GetLength(0);
+            _graphics.ApplyChanges();
+
+            base.Initialize();
+        }
+
+        protected override void LoadContent()
+        {
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            box = Content.Load<Texture2D>("Crate_Purple");
+            wall = Content.Load<Texture2D>("Wall_Brown");
+            dot = Content.Load<Texture2D>("EndPoint_Blue");
+            player = Content.Load<Texture2D>("Character4");
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+
+            sokoban.Update(gameTime);
+
+            base.Update(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.Pink);
+
+            _spriteBatch.Begin();
+            Rectangle position = new Rectangle(0, 0, tileSize, tileSize);
+            for (int x = 0; x < level.GetLength(0); x++)
             {
-                if (linhas[y][x] == 'Y')
+                for (int y = 0; y < level.GetLength(1); y++)
                 {
-                    sokoban = new Player(x, y);
-                    level[x, y] = ' '; // put a blank instead of the sokoban 'Y'
+                    position.X = x * tileSize;
+                    position.Y = y * tileSize;
+                    switch (level[x, y])
+                    {
+                        case '.':
+                            _spriteBatch.Draw(dot, position, Color.White);
+                            break;
+                        case 'X':
+                            _spriteBatch.Draw(wall, position, Color.White);
+                            break;
+                    }
                 }
-                else
+            }
+
+            foreach (Point b in boxes)
+            {
+                position.X = b.X * tileSize;
+                position.Y = b.Y * tileSize;
+                _spriteBatch.Draw(box, position, Color.White);
+            }
+
+            position.X = sokoban.Position.X * tileSize;
+            position.Y = sokoban.Position.Y * tileSize;
+            _spriteBatch.Draw(player, position, Color.White);
+
+            _spriteBatch.End();
+
+            base.Draw(gameTime);
+        }
+
+        public bool HasBox(int x, int y)
+        {
+            foreach (Point b in boxes)
+            {
+                if (b.X == x && b.Y == y) return true;
+            }
+            return false;
+        }
+        public bool FreeTile(int x, int y)
+        {
+            if (level[x, y] == 'X') return false;  // Wall means its taken
+            if (HasBox(x, y)) return false; // Has a box
+            return true;
+
+            /* The same as:    return level[x,y] != 'X' && !HasBox(x,y);   */
+        }
+
+        void LoadLevel(string levelFile)
+        {
+            boxes = new List<Point>();
+            string[] linhas = File.ReadAllLines($"Content/{levelFile}");  // "Content/" + level
+            int nrLinhas = linhas.Length;
+            int nrColunas = linhas[0].Length;
+
+            level = new char[nrColunas, nrLinhas];
+            for (int x = 0; x < nrColunas; x++)
+            {
+                for (int y = 0; y < nrLinhas; y++)
                 {
-                    level[x, y] = linhas[y][x];
+                    if (linhas[y][x] == '#')
+                    {
+                        boxes.Add(new Point(x, y));
+                        level[x, y] = ' '; // put a blank instead of the box '#'
+                    }
+                    else if (linhas[y][x] == 'Y')
+                    {
+                        sokoban = new Player(this, x, y);
+                        level[x, y] = ' '; // put a blank instead of the sokoban 'Y'
+                    }
+                    else
+                    {
+                        level[x, y] = linhas[y][x];
+                    }
                 }
             }
         }
-    }
-
-    protected override void Update(GameTime gameTime)
-    {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-            Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
-
-        // TODO: Add your update logic here
-
-        base.Update(gameTime);
-    }
-
-    protected override void Draw(GameTime gameTime)
-    {
-        GraphicsDevice.Clear(Color.Pink);
-        
-        _spriteBatch.Begin();
-        //_spriteBatch.DrawString(font, "BALLS", new Vector2(100, 100), Color.Blue);
-        //_spriteBatch.DrawString(font, $"Numero de Linhas = {nrLinhas} -- Numero de Colunas = {nrColunas}",new Vector2(200, 200), Color.Blue);
-        
-        Rectangle position = new Rectangle(0, 0, tileSize, tileSize); //calculo do retangulo a depender do tileSize
-        for (int x = 0; x < level.GetLength(0); x++)  //pega a primeira dimensão
-        {
-            for (int y = 0; y < level.GetLength(1); y++) //pega a segunda dimensão
-            {
-                position.X = x * tileSize; // define o position
-                position.Y = y * tileSize; // define o position
-
-                switch (level[x, y])
-                {
-                    /*case 'Y':
-                        _spriteBatch.Draw(player, position, Color.White);
-                        break;*/
-                    case '#':
-                        _spriteBatch.Draw(box, position, Color.White);
-                        break;
-                    case '.':
-                        _spriteBatch.Draw(dot, position, Color.White);
-                        break;
-                    case 'X':
-                        _spriteBatch.Draw(wall, position, Color.White);
-                        break;
-                }
-            }
-        }
-        
-        position.X = sokoban.Position.X * tileSize;
-        position.Y = sokoban.Position.Y * tileSize;
-        _spriteBatch.Draw(player, position, Color.White);
-
-        _spriteBatch.End();
-
-        // TODO: Add your drawing code here
-
-        base.Draw(gameTime);
     }
 }
